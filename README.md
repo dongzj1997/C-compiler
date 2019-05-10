@@ -37,7 +37,7 @@ FlexLexer.h	|	flex/bison自带，与在flex中使用C++有关
 
 ## 2、使用方法
 ### 2.1 编译
-方法1：cd到src文件夹，在cmd或者powershell 中运行com.bat 批处理脚本（需要g++）
+方法1：cd到src文件夹，在cmd或者powershell 中运行com.bat 批处理脚本（需要g++）   
 方法2：在src文件夹下依次执行如下命令：
 ```
 .\win_flex.exe .\my_compiler.l
@@ -94,6 +94,8 @@ g++ -std=c++11 -o compiler AST.cpp my_compiler.tab.c lex.yy.c Praser.cpp AsmCode
 ## 3、其他说明
 具体支持什么样的语法功能请看 实现原理.doc
 
+![](./imgs/img11.jpg)
+
 **！！注意**    
 输入一个数的写法为 a=scan();    
 输出一个数的写法为 print(a);    
@@ -137,6 +139,389 @@ int main()
     return 0;
 }
 ```
+
+生成的语法树：
+
+```
++-Program
+  +-translation_unit
+    +-translation_unit
+    | +-external_declaration
+    |   +-function_definition
+    |     +-type_specifier
+    |     | +-INT
+    |     +-direct_declarator
+    |     | +-direct_declarator
+    |     | | +-IDENTIFIER :fib
+    |     | +-(
+    |     | +-parameter_list
+    |     | | +-parameter_declaration
+    |     | |   +-type_specifier
+    |     | |   | +-INT
+    |     | |   +-direct_declarator
+    |     | |     +-IDENTIFIER :n
+    |     | +-)
+    |     +-compound_statement
+    |       +-{
+    |       +-block_item_list
+    |       | +-block_item_list
+    |       | | +-block_item
+    |       | | | +-declaration
+    |       | | |   +-type_specifier
+    |       | | |   | +-INT
+    |       | | |   +-init_declarator_list
+    |       | | |   | +-init_declarator
+    |       | | |   |   +-direct_declarator
+    |       | | |   |     +-IDENTIFIER :ans
+    |       | | |   +-;
+    |       | | +-block_item
+    |       | |   +-statement
+    |       | |     +-selection_statement
+    |       | |       +-IF
+    |       | |       +-(
+    |       | |       +-assignment_expression
+    |       | |       | +-equality_expression
+    |       | |       |   +-primary_expression
+    |       | |       |   | +-IDENTIFIER :n
+    |       | |       |   +-EQ_OP
+    |       | |       |   +-primary_expression
+    |       | |       |     +-CONSTANT_INT :1
+    |       | |       +-)
+    |       | |       +-statement
+    |       | |       | +-compound_statement
+    |       | |       |   +-{
+    |       | |       |   +-block_item
+    |       | |       |   | +-statement
+    |       | |       |   |   +-expression_statement
+    |       | |       |   |     +-assignment_expression
+    |       | |       |   |     | +-primary_expression
+    |       | |       |   |     | | +-IDENTIFIER :ans
+    |       | |       |   |     | +-assignment_operator
+    |       | |       |   |     | | +-=
+    |       | |       |   |     | +-assignment_expression
+    |       | |       |   |     |   +-primary_expression
+    |       | |       |   |     |     +-CONSTANT_INT :1
+    |       | |       |   |     +-;
+    |       | |       |   +-}
+    |       | |       +-ELSE
+    |       | |       +-statement
+    |       | |         +-selection_statement
+    |       | |           +-IF
+    |       | |           +-(
+    |       | |           +-assignment_expression
+    |       | |           | +-equality_expression
+    |       | |           |   +-primary_expression
+    |       | |           |   | +-IDENTIFIER :n
+    |       | |           |   +-EQ_OP
+    |       | |           |   +-primary_expression
+    |       | |           |     +-CONSTANT_INT :2
+    |       | |           +-)
+    |       | |           +-statement
+    |       | |           | +-compound_statement
+    |       | |           |   +-{
+    |       | |           |   +-block_item
+    |       | |           |   | +-statement
+    |       | |           |   |   +-expression_statement
+    |       | |           |   |     +-assignment_expression
+    |       | |           |   |     | +-primary_expression
+    |       | |           |   |     | | +-IDENTIFIER :ans
+    |       | |           |   |     | +-assignment_operator
+    |       | |           |   |     | | +-=
+    |       | |           |   |     | +-assignment_expression
+    |       | |           |   |     |   +-primary_expression
+    |       | |           |   |     |     +-CONSTANT_INT :1
+    |       | |           |   |     +-;
+    |       | |           |   +-}
+    |       | |           +-ELSE
+    |       | |           +-statement
+    |       | |             +-compound_statement
+    |       | |               +-{
+    |       | |               +-block_item
+    |       | |               | +-statement
+    |       | |               |   +-expression_statement
+    |       | |               |     +-assignment_expression
+    |       | |               |     | +-primary_expression
+    |       | |               |     | | +-IDENTIFIER :ans
+    |       | |               |     | +-assignment_operator
+    |       | |               |     | | +-=
+    |       | |               |     | +-assignment_expression
+    |       | |               |     |   +-additive_expression
+    |       | |               |     |     +-postfix_expression
+    |       | |               |     |     | +-primary_expression
+    |       | |               |     |     | | +-IDENTIFIER :fib
+    |       | |               |     |     | +-(
+    |       | |               |     |     | +-argument_expression_list
+    |       | |               |     |     | | +-assignment_expression
+    |       | |               |     |     | |   +-additive_expression
+    |       | |               |     |     | |     +-primary_expression
+    |       | |               |     |     | |     | +-IDENTIFIER :n
+    |       | |               |     |     | |     +--
+    |       | |               |     |     | |     +-primary_expression
+    |       | |               |     |     | |       +-CONSTANT_INT :1
+    |       | |               |     |     | +-)
+    |       | |               |     |     +-+
+    |       | |               |     |     +-postfix_expression
+    |       | |               |     |       +-primary_expression
+    |       | |               |     |       | +-IDENTIFIER :fib
+    |       | |               |     |       +-(
+    |       | |               |     |       +-argument_expression_list
+    |       | |               |     |       | +-assignment_expression
+    |       | |               |     |       |   +-additive_expression
+    |       | |               |     |       |     +-primary_expression
+    |       | |               |     |       |     | +-IDENTIFIER :n
+    |       | |               |     |       |     +--
+    |       | |               |     |       |     +-primary_expression
+    |       | |               |     |       |       +-CONSTANT_INT :2
+    |       | |               |     |       +-)
+    |       | |               |     +-;
+    |       | |               +-}
+    |       | +-block_item
+    |       |   +-statement
+    |       |     +-jump_statement
+    |       |       +-RETURN
+    |       |       +-assignment_expression
+    |       |       | +-primary_expression
+    |       |       |   +-IDENTIFIER :ans
+    |       |       +-;
+    |       +-}
+    +-external_declaration
+      +-function_definition
+        +-type_specifier
+        | +-INT
+        +-direct_declarator
+        | +-direct_declarator
+        | | +-IDENTIFIER :main
+        | +-(
+        | +-)
+        +-compound_statement
+          +-{
+          +-block_item_list
+          | +-block_item_list
+          | | +-block_item_list
+          | | | +-block_item_list
+          | | | | +-block_item
+          | | | | | +-declaration
+          | | | | |   +-type_specifier
+          | | | | |   | +-INT
+          | | | | |   +-init_declarator_list
+          | | | | |   | +-init_declarator_list
+          | | | | |   | | +-init_declarator
+          | | | | |   | |   +-direct_declarator
+          | | | | |   | |     +-IDENTIFIER :a
+          | | | | |   | +-,
+          | | | | |   | +-init_declarator
+          | | | | |   |   +-direct_declarator
+          | | | | |   |     +-IDENTIFIER :v
+          | | | | |   +-;
+          | | | | +-block_item
+          | | | |   +-statement
+          | | | |     +-expression_statement
+          | | | |       +-assignment_expression
+          | | | |       | +-primary_expression
+          | | | |       | | +-IDENTIFIER :a
+          | | | |       | +-assignment_operator
+          | | | |       | | +-=
+          | | | |       | +-assignment_expression
+          | | | |       |   +-postfix_expression
+          | | | |       |     +-primary_expression
+          | | | |       |     | +-IDENTIFIER :scan
+          | | | |       |     +-(
+          | | | |       |     +-)
+          | | | |       +-;
+          | | | +-block_item
+          | | |   +-statement
+          | | |     +-expression_statement
+          | | |       +-assignment_expression
+          | | |       | +-primary_expression
+          | | |       | | +-IDENTIFIER :v
+          | | |       | +-assignment_operator
+          | | |       | | +-=
+          | | |       | +-assignment_expression
+          | | |       |   +-postfix_expression
+          | | |       |     +-primary_expression
+          | | |       |     | +-IDENTIFIER :fib
+          | | |       |     +-(
+          | | |       |     +-argument_expression_list
+          | | |       |     | +-assignment_expression
+          | | |       |     |   +-primary_expression
+          | | |       |     |     +-IDENTIFIER :a
+          | | |       |     +-)
+          | | |       +-;
+          | | +-block_item
+          | |   +-statement
+          | |     +-expression_statement
+          | |       +-assignment_expression
+          | |       | +-postfix_expression
+          | |       |   +-primary_expression
+          | |       |   | +-IDENTIFIER :print
+          | |       |   +-(
+          | |       |   +-argument_expression_list
+          | |       |   | +-assignment_expression
+          | |       |   |   +-primary_expression
+          | |       |   |     +-IDENTIFIER :v
+          | |       |   +-)
+          | |       +-;
+          | +-block_item
+          |   +-statement
+          |     +-jump_statement
+          |       +-RETURN
+          |       +-assignment_expression
+          |       | +-primary_expression
+          |       |   +-CONSTANT_INT :0
+          |       +-;
+          +-}
+```
+
+生成的中间代码：
+```Assembly
+FUNC fib:
+        PARAM_IN var0
+        temp0 = 1
+        temp1 = var0 == temp0
+        IF temp1 != 0  GOTO label_0
+        GOTO label_1
+label_0:
+        temp2 = 1
+        var1 = temp2
+        GOTO label_2
+label_1:
+        temp3 = 2
+        temp4 = var0 == temp3
+        IF temp4 != 0  GOTO label_3
+        GOTO label_4
+label_3:
+        temp5 = 1
+        var1 = temp5
+        GOTO label_5
+label_4:
+        temp6 = 1
+        temp7 = var0 - temp6
+        PARAM_PREP temp7
+        temp8 = CALL fib
+        temp9 = 2
+        temp10 = var0 - temp9
+        PARAM_PREP temp10
+        temp11 = CALL fib
+        temp12 = temp8 + temp11
+        var1 = temp12
+label_5:
+label_2:
+        RETURN var1
+FUNC main:
+        temp13 = CALL scan
+        var2 = temp13
+        PARAM_PREP var2
+        temp14 = CALL fib
+        var3 = temp14
+        PARAM_PREP var3
+        CALL print
+        temp15 = 0
+        RETURN temp15
+```
+
+生成的汇编代码：
+
+```Assembly
+include 'emu8086.inc'
+ORG 100h
+MOV AX,0500H
+MOV DS,AX
+CALL MAIN
+.EXIT
+
+
+fib PROC
+MOV DX,DS
+ADD DX,0010h
+MOV DS,DX
+MOV [00H],AX
+MOV AX,1
+MOV [02H],AX
+MOV AX,[00H]
+MOV BX,[02H]
+SUB AX,BX
+MOV [04H],AX
+JE label_0
+JMP label_1
+label_0:
+MOV AX,1
+MOV [06H],AX
+MOV AX,[06H]
+MOV [08H],AX
+JMP label_2
+label_1:
+MOV AX,2
+MOV [0AH],AX
+MOV AX,[00H]
+MOV BX,[0AH]
+SUB AX,BX
+MOV [0CH],AX
+JE label_3
+JMP label_4
+label_3:
+MOV AX,1
+MOV [0EH],AX
+MOV AX,[0EH]
+MOV [08H],AX
+JMP label_5
+label_4:
+MOV AX,1
+MOV [10H],AX
+MOV AX,[00H]
+MOV BX,[10H]
+SUB AX,BX
+MOV [12H],AX
+MOV AX,[12H]
+CALL fib
+MOV [14H],CX
+MOV AX,2
+MOV [16H],AX
+MOV AX,[00H]
+MOV BX,[16H]
+SUB AX,BX
+MOV [18H],AX
+MOV AX,[18H]
+CALL fib
+MOV [1AH],CX
+MOV AX,[14H]
+MOV BX,[1AH]
+ADD AX,BX
+MOV [1CH],AX
+MOV AX,[1CH]
+MOV [08H],AX
+label_5:
+label_2:
+MOV CX,[08H]
+MOV DX,DS
+SUB DX,0010h
+MOV DS,DX
+RET
+fib ENDP
+
+main PROC
+CALL scan_num
+MOV [1EH],CX
+MOV AX,[1EH]
+MOV [20H],AX
+MOV AX,[20H]
+CALL fib
+MOV [22H],CX
+MOV AX,[22H]
+MOV [24H],AX
+MOV AX,[24H]
+CALL print_num
+MOV AX,0
+MOV [26H],AX
+MOV CX,[26H]
+RET
+main ENDP
+DEFINE_SCAN_NUM
+DEFINE_PRINT_NUM
+DEFINE_PRINT_NUM_UNS
+END
+```
+
+求斐波那契数列的第18项，输入18，输出为2584
 
 ![](./imgs/img9.jpg)
 
