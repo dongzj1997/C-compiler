@@ -37,7 +37,7 @@ FlexLexer.h	|	flex/bison自带，与在flex中使用C++有关
 
 ## 2、使用方法
 ### 2.1 编译
-方法1：cd到src文件夹，在cmd或者powershell 中运行com.bat 批处理脚本（需要g++）
+方法1：cd到src文件夹，在cmd或者powershell 中运行com.bat 批处理脚本（需要g++）   
 方法2：在src文件夹下依次执行如下命令：
 ```
 .\win_flex.exe .\my_compiler.l
@@ -372,7 +372,7 @@ int main()
           +-}
 ```
 
-生成的x86汇编代码：
+生成的中间代码：
 ```Assembly
 FUNC fib:
         PARAM_IN var0
@@ -417,6 +417,108 @@ FUNC main:
         CALL print
         temp15 = 0
         RETURN temp15
+```
+
+生成的汇编代码：
+
+```Assembly
+include 'emu8086.inc'
+ORG 100h
+MOV AX,0500H
+MOV DS,AX
+CALL MAIN
+.EXIT
+
+
+fib PROC
+MOV DX,DS
+ADD DX,0010h
+MOV DS,DX
+MOV [00H],AX
+MOV AX,1
+MOV [02H],AX
+MOV AX,[00H]
+MOV BX,[02H]
+SUB AX,BX
+MOV [04H],AX
+JE label_0
+JMP label_1
+label_0:
+MOV AX,1
+MOV [06H],AX
+MOV AX,[06H]
+MOV [08H],AX
+JMP label_2
+label_1:
+MOV AX,2
+MOV [0AH],AX
+MOV AX,[00H]
+MOV BX,[0AH]
+SUB AX,BX
+MOV [0CH],AX
+JE label_3
+JMP label_4
+label_3:
+MOV AX,1
+MOV [0EH],AX
+MOV AX,[0EH]
+MOV [08H],AX
+JMP label_5
+label_4:
+MOV AX,1
+MOV [10H],AX
+MOV AX,[00H]
+MOV BX,[10H]
+SUB AX,BX
+MOV [12H],AX
+MOV AX,[12H]
+CALL fib
+MOV [14H],CX
+MOV AX,2
+MOV [16H],AX
+MOV AX,[00H]
+MOV BX,[16H]
+SUB AX,BX
+MOV [18H],AX
+MOV AX,[18H]
+CALL fib
+MOV [1AH],CX
+MOV AX,[14H]
+MOV BX,[1AH]
+ADD AX,BX
+MOV [1CH],AX
+MOV AX,[1CH]
+MOV [08H],AX
+label_5:
+label_2:
+MOV CX,[08H]
+MOV DX,DS
+SUB DX,0010h
+MOV DS,DX
+RET
+fib ENDP
+
+main PROC
+CALL scan_num
+MOV [1EH],CX
+MOV AX,[1EH]
+MOV [20H],AX
+MOV AX,[20H]
+CALL fib
+MOV [22H],CX
+MOV AX,[22H]
+MOV [24H],AX
+MOV AX,[24H]
+CALL print_num
+MOV AX,0
+MOV [26H],AX
+MOV CX,[26H]
+RET
+main ENDP
+DEFINE_SCAN_NUM
+DEFINE_PRINT_NUM
+DEFINE_PRINT_NUM_UNS
+END
 ```
 
 求斐波那契数列的第18项，输入18，输出为2584
